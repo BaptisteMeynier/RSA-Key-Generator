@@ -29,6 +29,7 @@ public class ComputePrime {
 
         BigInteger phiN = p.min(BigInteger.valueOf(1)).multiply(q.min(BigInteger.valueOf(1)));
         BigInteger phiNSqrt = phiN.sqrt();
+     //   phiN.g
        // phiN.divideAndRemainder()
 
         return null;
