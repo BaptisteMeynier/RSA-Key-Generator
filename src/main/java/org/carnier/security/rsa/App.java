@@ -2,6 +2,8 @@ package org.carnier.security.rsa;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.security.SecureRandom;
+import java.util.Random;
 
 /**
  * Hello world!
@@ -29,33 +31,39 @@ public class App {
      *             <p>
      *             Le mécanisme de signature par Alice, à l'aide de sa clé privée, est analogue, en échangeant les clés.
      */
+/*
+    BigInteger encrypt(BigInteger publicKey, BigInteger message) {
+        return message.modPow(publicKey, modulus);
+    }
+
+    BigInteger decrypt(BigInteger encrypted) {
+        return encrypted.modPow(privateKey, modulus);
+    }*/
 
     public static void main(String[] args) {
+        int bitLenght = 256;
         //1)
-        BigInteger p = BigInteger.valueOf(41);
-        BigInteger q = BigInteger.valueOf(19);
+
+        SecureRandom r = new SecureRandom();
+        BigInteger p = new BigInteger(bitLenght / 2, 100, r);
+        BigInteger q = new BigInteger(bitLenght / 2, 100, r);
 
         //2)
         BigInteger n = p.multiply(q);
 
         //3)
-        BigInteger phiN = p.min(BigInteger.valueOf(1)).multiply(q.min(BigInteger.valueOf(1)));
-
-         //4)
-        //il faut calculer la racine de phiN et prendre la partie entiere parceque tous les nombre premiers diviseur de phiN sont forcément inférieur a la racine de phiN (demander a Simon pour la demonstration)
-        //décomposer phiN en produit de facteurs premier, ces facteurs doivent etre plus petit que racine de phiN (le faire a partir de (p-1) et (q-1) plus petit que de le faire sur le produit
-        //resultat possible : 3^2 * 2^4 * 5^1
-        //Générer un tableau de tuple nombre premier et exposant
-        //Parallelelement on a un tableau de tous les nombres premier inférieur a racine de phiN
-        // et on y affecte un booleen pour répertorier les nombres premiers diviseurs de phiN
-        // exemple :
-        //
-
-
+        BigInteger phiN = p.subtract(BigInteger.valueOf(1)).multiply(q.subtract(BigInteger.valueOf(1)));
 
         //4)
+        BigInteger e;
+        do {
+            e = new BigInteger(bitLenght,100, r);
+        } while (!phiN.gcd(e).equals(BigInteger.ONE) && e.compareTo(phiN) == -1);
 
+        BigInteger d = e.modInverse(phiN);
 
-        System.out.println("Hello World!");
+        System.out.println("Public key:(n,e) (" + n + "," + e + ")");
+        System.out.println("Private key: d (" + d + ")");
+
     }
 }
