@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Hello world!
@@ -31,19 +32,19 @@ public class App {
      *             <p>
      *             Le mécanisme de signature par Alice, à l'aide de sa clé privée, est analogue, en échangeant les clés.
      */
-/*
-    BigInteger encrypt(BigInteger publicKey, BigInteger message) {
-        return message.modPow(publicKey, modulus);
+
+    public static BigInteger encrypt(BigInteger e,BigInteger n , BigInteger message) {
+        return message.modPow(e, n);
     }
 
-    BigInteger decrypt(BigInteger encrypted) {
-        return encrypted.modPow(privateKey, modulus);
-    }*/
+    public static BigInteger decrypt(BigInteger d, BigInteger n , BigInteger encrypted) {
+        return encrypted.modPow(d, n);
+    }
 
     public static void main(String[] args) {
-        int bitLenght = 256;
+        int bitLenght = 16384;
         //1)
-
+        long begin = System.nanoTime();
         SecureRandom r = new SecureRandom();
         BigInteger p = new BigInteger(bitLenght / 2, 100, r);
         BigInteger q = new BigInteger(bitLenght / 2, 100, r);
@@ -61,9 +62,10 @@ public class App {
         } while (!phiN.gcd(e).equals(BigInteger.ONE) && e.compareTo(phiN) == -1);
 
         BigInteger d = e.modInverse(phiN);
+        long end = System.nanoTime();
 
         System.out.println("Public key:(n,e) (" + n + "," + e + ")");
         System.out.println("Private key: d (" + d + ")");
-
+        System.out.println("Compute duration  = " + TimeUnit.NANOSECONDS.toMillis(Math.abs(end - begin)) + " ms");
     }
 }
